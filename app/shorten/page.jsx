@@ -1,52 +1,78 @@
 'use client';
 import { useState } from 'react';
 import axios from 'axios';
-
+import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input"
+import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 export default function ShortenPage() {
-  const [url, setUrl] = useState('');
-//   const [maxClicks, setMaxClicks] = useState(10);
-//   const [expiryDate, setExpiryDate] = useState('');
-  const [shortUrl, setShortUrl] = useState('');
+    const [url, setUrl] = useState('');
+    const [shortUrl, setShortUrl] = useState('');
+
+    const placeholders = [
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+        "https://docs.python.org/3/tutorial/index.html",
+        "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    ];
+
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(shortUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    };
+
+    const handleChange = (e) => {
+        setUrl(e.target.value)
+    };
+
+    const onSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            new URL(url);
+        } catch {
+            alert("Please enter a valid URL (e.g., https://example.com)");
+            return;
+        }
+
+        try {
+            const res = await axios.post('/api/shorten', { url });
+            setShortUrl(res.data.shortUrl);
+        } catch (err) {
+            console.error(err);
+            alert('Error: ' + (err.response?.data?.error || err.message));
+        }
+    };
 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post('/api/shorten', {
-        url,
-      });
-      setShortUrl(res.data.shortUrl);
-    } catch (err) {
-      alert('Error: ' + err.response?.data || err.message);
-    }
-  };
+    return (
+        <BackgroundBeamsWithCollision>
+            <div className="h-[40rem] flex flex-col justify-center  items-center px-4">
+                <h2
+                    className="mb-10 sm:mb-15 text-xl text-center sm:text-5xl dark:text-white text-black w-screen">
+                    Short any URL
+                </h2>
+                <PlaceholdersAndVanishInput placeholders={placeholders} onChange={handleChange} onSubmit={onSubmit} value={url} />
 
+                {shortUrl && (
+                    <div className="mt-4 flex flex-col items-center gap-2">
+                        <p className="text-green-600">
 
-  return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Shorten a URL</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="url"
-          required
-          placeholder="Enter URL"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          className="w-full border rounded p-2"
-        />
+                            <a href={shortUrl} target="_blank" className="underline">
+                                {shortUrl}
+                            </a>
+                        </p>
 
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Shorten
-        </button>
-      </form>
-      {shortUrl && (
-        <div className="mt-4">
-          <p className="text-green-600">Short URL: <a href={shortUrl} className="underline">{shortUrl}</a></p>
-        </div>
-      )}
-    </div>
-  );
+                        <button
+                            onClick={handleCopy}
+                            className="px-4 py-1 rounded-2xl bg-black text-white border transition cursor-pointer"
+                        >
+                            {copied ? "Copied!" : "Copy"}
+                        </button>
+
+                    </div>
+                )}
+            </div>
+        </BackgroundBeamsWithCollision>
+    );
 }

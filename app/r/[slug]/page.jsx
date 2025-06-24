@@ -4,7 +4,12 @@ import { redirect } from "next/navigation";
 
 export default async function Page({ params }) {
   await connectDB();
-  const link = await Link.findOne({ slug: params.slug });
-  
-  redirect(link.originalUrl);
+
+  const link = await Link.findOne({ slug:params.slug });
+
+  if (!link) {
+    return redirect("/not-found");
+  }
+
+  return redirect(link.originalUrl);
 }
