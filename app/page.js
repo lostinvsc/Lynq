@@ -3,6 +3,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input"
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
+import AuthStatus from '@/components/AuthStatus';
+import MyLinks from '@/components/MyLinks';
 export default function ShortenPage() {
     const [url, setUrl] = useState('');
     const [shortUrl, setShortUrl] = useState('');
@@ -48,15 +50,16 @@ export default function ShortenPage() {
     return (
         <BackgroundBeamsWithCollision>
             <div className="h-[40rem] flex flex-col justify-center  items-center px-4">
+            <AuthStatus />
                 <h2
-                    className="mb-10 sm:mb-15 text-xl text-center sm:text-5xl dark:text-white text-black w-screen">
+                    className="-translate-y-40 mb-10 sm:mb-15 text-xl text-center sm:text-5xl dark:text-white text-black w-screen">
                     Short any URL
                 </h2>
                 <PlaceholdersAndVanishInput placeholders={placeholders} onChange={handleChange} onSubmit={onSubmit} value={url} />
-
+                         
                 {shortUrl && (
-                    <div className="mt-4 flex flex-col items-center gap-2">
-                        <p className="text-green-600">
+                    <div className="mt-4 flex flex-col items-center gap-2 -translate-y-40">
+                        <p className="text-white">
 
                             <a href={shortUrl} target="_blank" className="underline">
                                 {shortUrl}
@@ -70,8 +73,10 @@ export default function ShortenPage() {
                             {copied ? "Copied!" : "Copy"}
                         </button>
 
+
                     </div>
                 )}
+                <MyLinks/>
             </div>
         </BackgroundBeamsWithCollision>
     );

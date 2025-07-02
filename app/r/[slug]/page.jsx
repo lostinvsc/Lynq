@@ -1,15 +1,23 @@
-import { connectDB } from "@/lib/mongodb";
-import Link from "@/models/Link";
+import pool from "@/lib/db";
 import { redirect } from "next/navigation";
 
 export default async function Page({ params }) {
-  await connectDB();
+  const {slug} =await params;
+  if(!slug){
+    return redirect("/not-found");
+  }
+  // Fetch original URL from DB
+  const [rows] = await pool.query(
+    "SELECT originalUrl FROM link WHERE slug = ?",
+    [slug]
+  );
 
-  const link = await Link.findOne({ slug:params.slug });
-
-  if (!link) {
+  if (rows.length === 0) {
+    // If slug not found, redirect to not-found
     return redirect("/not-found");
   }
 
-  return redirect(link.originalUrl);
+  const originalUrl = rows[0].originalUrl;
+  // Redirect to the original URL
+  return redirect(originalUrl);
 }
