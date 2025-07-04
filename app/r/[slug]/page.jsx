@@ -2,7 +2,7 @@ import pool from "@/lib/db";
 import { redirect } from "next/navigation";
 
 export default async function Page({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
 
   if (!slug) {
     return redirect("/not-found");

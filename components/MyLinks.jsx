@@ -153,7 +153,7 @@ export default function MyLinks() {
         <ul className="space-y-4 flex flex-wrap justify-center gap-5">
           {links.map((link, index) => (
             <li key={link.slug} className="p-3 rounded border border-gray-500 h-fit max-w-[350px] w-screen mx-2">
-              <p>
+              <p className="break-words">
                 <strong>{index + 1}.</strong> <strong>Original:</strong> {link.originalUrl}
               </p>
               <p>
@@ -164,7 +164,7 @@ export default function MyLinks() {
                   className="text-blue-600 underline"
                   target="_blank"
                 >
-                  {`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/r/${link.slug}`}
+                  {`${process.env.NEXTAUTH_URL || 'https://lynq-delta.vercel.app/'}/r/${link.slug}`}
                 </a>
               </p>
 
