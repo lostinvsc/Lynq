@@ -5,7 +5,7 @@ import { authOptions } from "../auth/[...nextauth]/route";
 
 export async function POST(req) {
   try {
-    const { url } = await req.json();
+    const { url, maxCount, expiresAt } = await req.json();
 
     if (!url) {
       return new Response(JSON.stringify({ error: "URL is required" }), {
@@ -37,10 +37,31 @@ export async function POST(req) {
       });
     }
 
+    let formattedDate = null;
+
+    if (expiresAt) {
+      const date = new Date(expiresAt); // Comes from frontend (IST already)
+
+      if (!isNaN(date.getTime())) {
+        // Convert to IST (Asia/Kolkata) and format to MySQL DATETIME
+        const istDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+
+        const yyyy = istDate.getFullYear();
+        const mm = String(istDate.getMonth() + 1).padStart(2, "0");
+        const dd = String(istDate.getDate()).padStart(2, "0");
+        const hh = String(istDate.getHours()).padStart(2, "0");
+        const mi = String(istDate.getMinutes()).padStart(2, "0");
+        const ss = "00";
+
+        formattedDate = `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`; // ✅ MySQL DATETIME format
+      }
+    }
+
+
     // Insert new link with user_id (or NULL if not logged in)
     await pool.query(
-      "INSERT INTO link (user_id, slug, originalUrl) VALUES (?, ?, ?)",
-      [userId, slug, url]
+      "INSERT INTO link (user_id, slug, originalUrl, maxCount, validity) VALUES (?, ?, ?, ?, ?)",
+      [userId, slug, url, maxCount ?? null, formattedDate ?? null]
     );
 
     return new Response(

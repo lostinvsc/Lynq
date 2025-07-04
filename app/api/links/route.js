@@ -23,7 +23,7 @@ export async function GET() {
 
     // 2. Fetch links for that user
     const [links] = await pool.query(
-      "SELECT slug, originalUrl FROM link WHERE user_id = ?",
+      "SELECT slug, originalUrl,maxCount,validity FROM link WHERE user_id = ?",
       [userId]
     );
 
