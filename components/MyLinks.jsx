@@ -184,7 +184,7 @@ export default function MyLinks() {
               </p>
 
               <p>
-                Max Count: {link.maxCount!=NULL?link.maxCount:'Unlimited'}
+                Max Count: {link.maxCount}
               </p>
               <div className="mt-2 flex gap-3">
                 <button
