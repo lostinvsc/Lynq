@@ -138,10 +138,10 @@ export default function MyLinks() {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="mx-auto w-fit">Loading...</p>;
 
   if (!session) {
-    return <p className="text-red-500">Sign in to see your history.</p>;
+    return <p className="text-red-500 mx-auto w-fit mt-4">Sign in to see your history.</p>;
   }
 
   return (
