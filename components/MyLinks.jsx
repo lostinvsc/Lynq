@@ -145,7 +145,7 @@ export default function MyLinks() {
   }
 
   return (
-    <div className=" w-screen overflow-y-scroll pt-3 h-[450px] bg-transparent">
+    <div className=" w-screen pt-3 h-fit pb-5 bg-transparent">
       <h2 className="text-xl mx-auto w-fit font-bold mb-4 ">Your Shortened URLs</h2>
       {links.length === 0 ? (
         <p className="w-fit mx-auto text-red-700">No links found</p>
@@ -161,7 +161,7 @@ export default function MyLinks() {
                 <a
                   onClick={() => { if (link.maxCount > 0) { link.maxCount-- } }}
                   href={`/r/${link.slug}`}
-                  className="text-blue-600 underline"
+                  className="text-pink-500 underline"
                   target="_blank"
                 >
                   {`${process.env.NEXTAUTH_URL || 'https://lynq-delta.vercel.app/'}/r/${link.slug}`}
@@ -189,14 +189,14 @@ export default function MyLinks() {
               <div className="mt-2 flex gap-3">
                 <button
                   onClick={() => openEditModal(link)}
-                  className="px-3 py-1 bg-white text-black rounded"
+                  className="px-3  text-white rounded-full border border-green-600 cursor-pointer"
                 >
                   Edit
                 </button>
 
                 <button
                   onClick={() => handleDelete(link.slug)}
-                  className="px-3 py-1 bg-red-600 text-white rounded"
+                  className="px-3  text-white rounded-full border border-red-700 cursor-pointer"
                 >
                   Delete
                 </button>
